@@ -1,0 +1,137 @@
+# YAML Tutorial 📄
+
+YAML (YAML Ain’t Markup Language) is a human-readable data serialization language used for writing configuration files. It’s widely used in DevOps, MLOps, Docker, Kubernetes, and CI/CD pipelines like GitHub Actions.
+
+---
+
+## 🔹 Basic YAML Syntax
+
+### ✅ Key-Value Pairs
+```yaml
+name: Meisam
+age: 30
+email: meisam@example.com
+```
+
+### ✅ Nested Structure (indentation matters!)
+```yaml
+user:
+  name: Meisam
+  location:
+    city: Tehran
+    country: Iran
+```
+
+### ✅ Lists
+```yaml
+skills:
+  - Python
+  - Machine Learning
+  - Quantum Computing
+```
+
+### ✅ List of Dictionaries
+```yaml
+projects:
+  - name: Jet Charge Classification
+    year: 2024
+    field: High Energy Physics
+  - name: Quantum SVM
+    year: 2025
+    field: Quantum Machine Learning
+```
+
+---
+
+## 🔹 Comments
+
+Use `#` for comments:
+```yaml
+# This is a comment
+active: true  # This is an inline comment
+```
+
+---
+
+## 🔹 Real-World YAML Examples
+
+### 🐳 Docker Compose Example
+```yaml
+version: '3.8'
+
+services:
+  web:
+    image: nginx
+    ports:
+      - "8080:80"
+```
+
+### 🤖 GitHub Actions Workflow Example
+```yaml
+name: Python CI
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Run tests
+        run: pytest
+```
+
+---
+
+## 🚫 Common YAML Mistakes
+
+- ❌ Do **not use tabs** (use **spaces** only)
+- ❌ Improper indentation can break the file
+- ❌ Forgetting colons `:` after keys
+- ❌ No space after dash in list items (`-item` ➜ should be `- item`)
+
+---
+
+## 🧪 Practice Task
+
+Try writing the following YAML snippet:
+
+1. A `person` object with:
+   - name
+   - age
+   - list of programming languages
+   - 2 projects, each with name and year
+
+✅ Example:
+```yaml
+person:
+  name: Meisam
+  age: 30
+  languages:
+    - Python
+    - C++
+    - Rust
+  projects:
+    - name: Jet Charge Classification
+      year: 2024
+    - name: Quantum SVM
+      year: 2025
+```
+
+---
+
+## 📌 More Resources
+
+- YAML Official Site: https://yaml.org
+- YAML Validator: https://codebeautify.org/yaml-validator
+- Learn by example: GitHub Actions, Docker, MLflow, Kubernetes
+
+---
+
+✅ Save this file as `yaml_tutorial.md` and commit it to your GitHub repository for quick reference.
