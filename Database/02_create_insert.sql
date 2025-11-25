@@ -28,9 +28,8 @@ CREATE TABLE employees (
     age INT NOT NULL,
     current_status VARCHAR(255) NOT NULL DEFAULT 'employed'
 );
+
 -- A test INSERT:
-
-
-
+DESC employees;
 INSERT INTO employees(first_name, last_name, age) VALUES
 ('Dora', 'Smith', 58);
