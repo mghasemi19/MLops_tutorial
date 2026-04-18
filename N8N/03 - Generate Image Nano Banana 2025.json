@@ -1,0 +1,474 @@
+{
+  "name": "03 - Generate Image Nano Banana 2025",
+  "nodes": [
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6355ac9e-1f4c-42a3-8167-8bb8298cd369",
+              "name": "data",
+              "value": "={{ $json.choices[0].message.images[0].image_url.url }}",
+              "type": "string"
+            },
+            {
+              "id": "dc98bc1c-4048-4fcb-80c5-73dc99b78ddd",
+              "name": "base",
+              "value": "={{ $json.choices[0].message.images[0].image_url.url.split(',')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "8033a47e-f50c-43ae-b404-99d0fb5cf4eb",
+              "name": "mime",
+              "value": "={{ $json.choices[0].message.images[0].image_url.url.split(';')[0].split(':')[1] }}",
+              "type": "string"
+            },
+            {
+              "id": "0e516163-02cc-4242-ba70-ac2bce94d2dd",
+              "name": "fileName",
+              "value": ".png",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        608,
+        1104
+      ],
+      "id": "43cff29c-75fe-4e97-9746-9d280083ccd0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "jsCode": "const characterImageBase64String =\n  $input.all()[0]?.json[\"character image data\"];\nconst productImageBase64String = $(\"Product Image Base64 String\").all()[0]\n  ?.json[\"product image data\"];\n\nconst productImageUrl = `data:image/png;base64,${productImageBase64String}`;\nconst characterImageUrl = `data:image/png;base64,${characterImageBase64String}`;\n\nreturn { productImageUrl, characterImageUrl };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        832,
+        896
+      ],
+      "id": "84985b1d-21a7-4c83-b57f-b9f51bad4d63",
+      "name": "Code"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://openrouter.ai/api/v1/chat/completions",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "openRouterApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer $OPENROUTER_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"google/gemini-2.5-flash-image-preview\",\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"The first image conveys a model's overall style and aesthetic. The second image is a product. Generate a photorealistic image of a fashion model with a similar appearance to the first image actively using this product in a {{ $('Input').item.json.Style }}. The model should look happy and engaged. Faithfully recreate the product's design, colors, and details from its reference image.\"\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"{{ $json.characterImageUrl }}\"\n          }\n        },\n        {\n          \"type\": \"image_url\",\n          \"image_url\": {\n            \"url\": \"{{ $json.productImageUrl }}\"\n          }\n        }\n      ]\n    }\n  ]\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1328,
+        896
+      ],
+      "id": "fae46f21-44bf-4a46-96dc-8c2466553b72",
+      "name": "Nano 🍌",
+      "credentials": {
+        "openRouterApi": {
+          "id": "esBvi8TFxzAmaqmS",
+          "name": "OpenRouter"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Nano 🍌",
+        "height": 336,
+        "width": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        800
+      ],
+      "id": "3381a93e-aa24-43ce-90bc-9cce63b548ce",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "formTitle": "Advertise Image Generator",
+        "formDescription": "Convert Simple Product Images to High Quality Advertise Images",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Product Image",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "acceptFileTypes": ".jpg, .png",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Character Image",
+              "fieldType": "file",
+              "acceptFileTypes": ".jpg, .png",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Style",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Natural Setting"
+                  },
+                  {
+                    "option": "Lifestyle Setting"
+                  },
+                  {
+                    "option": "Urban Environment"
+                  },
+                  {
+                    "option": "Studio Backdrop"
+                  },
+                  {
+                    "option": "Professional Photoshoot"
+                  },
+                  {
+                    "option": "Modern Context"
+                  },
+                  {
+                    "option": "Elegant Atmosphere"
+                  },
+                  {
+                    "option": "Dynamic Scene"
+                  }
+                ]
+              },
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {
+          "appendAttribution": false,
+          "buttonLabel": "Generate ✨"
+        }
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -128,
+        896
+      ],
+      "id": "beb6cf89-e037-4d4f-a351-1e9ded6f81f7",
+      "name": "Input",
+      "webhookId": "01d8bb9c-4945-4455-b0c1-a3d34eba6bed"
+    },
+    {
+      "parameters": {
+        "operation": "completion",
+        "respondWith": "returnBinary",
+        "completionTitle": "Image Generation Completed",
+        "completionMessage": "Generated Image Will be Automatically Downloaded in Your Device",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.form",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        1328
+      ],
+      "id": "f5244194-1b88-4bad-b31c-0a8f997e2b2e",
+      "name": "Output",
+      "webhookId": "b9e4a3cd-f48d-4d94-a10e-da3077635869"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "Product_Image",
+        "destinationKey": "product image data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        368,
+        896
+      ],
+      "id": "cdc0670e-b37e-4bac-aadb-3771f951d8da",
+      "name": "Product Image Base64 String"
+    },
+    {
+      "parameters": {
+        "operation": "binaryToPropery",
+        "binaryPropertyName": "Character_Image",
+        "destinationKey": "character image data",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        608,
+        896
+      ],
+      "id": "fe681288-8d57-47e4-831a-4b5fc8a611fb",
+      "name": "Character Image Base64 String"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "a35cfb4e-81c4-429b-b7af-e56ca54861a2",
+              "leftValue": "={{ $json.choices[0].message.images[0].image_url.url }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        1120
+      ],
+      "id": "49d070ad-7d56-4754-a0f0-575a2aad11e2",
+      "name": "If"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        608,
+        1264
+      ],
+      "id": "4f850292-1b05-4e98-b46f-1ac0c97675e3",
+      "name": "No Operation, do nothing"
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "base",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        1104
+      ],
+      "id": "3f4157e1-18cc-4556-92f2-f8b1f7f2e7bd",
+      "name": "Convert to Binary"
+    },
+    {
+      "parameters": {
+        "content": "# Output 📂",
+        "height": 336,
+        "width": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        1248,
+        1200
+      ],
+      "id": "ec977a77-746d-4997-a87f-17ba2b0238b8",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "# Input 📑",
+        "height": 336,
+        "width": 272,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -208,
+        800
+      ],
+      "id": "132689a4-ed1b-49be-9cc5-6c66dee9c562",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "# Process ⚙",
+        "height": 640,
+        "width": 832,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        240,
+        800
+      ],
+      "id": "746fbcf9-9054-486c-950d-1888aefba777",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "# Let's Build a new Workflow with NanoBanana 🍌",
+        "height": 112,
+        "width": 1712
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        624
+      ],
+      "id": "58c1a8e2-6aa6-405b-87e5-b1aa9cf2d529",
+      "name": "Sticky Note4"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to Binary",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Nano 🍌",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nano 🍌": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Product Image Base64 String",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product Image Base64 String": {
+      "main": [
+        [
+          {
+            "node": "Character Image Base64 String",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Character Image Base64 String": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Operation, do nothing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Binary": {
+      "main": [
+        [
+          {
+            "node": "Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a5898d84-0556-4b45-b73d-3a589d5cf07f",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9f83f065a153a82327c1eb5e9d85d2f64b76af1671a19d2f39253eab7ae8868c"
+  },
+  "id": "3rxof43po54Ig7Bi",
+  "tags": [
+    {
+      "createdAt": "2025-09-26T05:54:21.369Z",
+      "updatedAt": "2025-09-26T05:54:21.369Z",
+      "id": "OAIQxnb7Z3BSNmKT",
+      "name": "Nanobanana"
+    },
+    {
+      "createdAt": "2025-08-24T03:25:53.064Z",
+      "updatedAt": "2025-08-24T03:25:53.064Z",
+      "id": "pGR20js5ytDmOkkx",
+      "name": "FinalProjects"
+    }
+  ]
+}
